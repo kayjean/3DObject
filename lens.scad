@@ -51,17 +51,48 @@ maxw1=lens_total_w;
 maxw2=part7_w;
 d22offset = 9.93;
 
+
 difference()
 {
-    translate([-maxh/2,-maxh/2,0])
-    cube([maxh,maxh,maxw1+maxw2]);
-    
-    translate([-maxh/2-lug,-maxh/2-5,-lug])
-    cube([maxh/2+lug,maxh+lug,maxw1+lug]);
 
-    translate([-maxh/2-lug-d22offset,-maxh/2-lug/2,-lug/2+maxw1])
-    cube([maxh/2+lug,maxh+lug,maxw2+lug]);
+    translate([-maxh/2,-maxh/2,0]) cube([maxh,maxh,maxw1+maxw2]);
+
+
+        //lens box
+    difference()
+    {
+    translate([-maxh/2-lug,-maxh/2-5,-lug]) cube([maxh/2+lug,maxh+lug,maxw1+lug]);
+        
+translate([15,0,maxw1])
+        rotate([0,65,0]) 
+        cube([45,maxh+2*lug,45], center=true);
+        
+        
+    }
+
+    
+    translate([0,-(maxh-2*lug)/2,maxw1+lug]) cube([maxh/2-lug,maxh-2*lug,maxw2-3*lug]);
+
+
+
+    //d22 box
+    union(){
+        translate([-maxh/2-lug-d22offset,-maxh/2-lug/2,-lug/2+maxw1]) cube([maxh/2+lug,maxh+lug,maxw2+lug]);    
+        
+        //6.0  8.2
+        translate([-d22offset, maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug],center=true);
+            
+        translate([-d22offset,-maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug], center=true);
+    }
+
+    //top tringle
+translate([maxh/2,0,maxw1+maxw2])
+        rotate([0,45,0]) 
+        cube([40,maxh+lug,40], center=true);
+
     
     lens();
     translate([0,0,lens_total_w]) d22();
+
 }
+
