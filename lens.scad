@@ -34,22 +34,22 @@ module lens()
 }
 
 part7_w = 126;
-part7_h = 59.42;
+part7_h = 60.0;
 
 module d22()
 {
     $fn=100;
-    box_x = 40;
-    box_y = 40;
+    box_x = 35;
+    box_y = 35;
     box_z = 40;
     cylinder(d=part7_h,h=part7_w+lug,center=false);
     translate([0,-box_y/2,0]) cube([box_x,box_y,box_z]);
 }
 
-maxh=85;
+maxh=77;
 maxw1=lens_total_w;
 maxw2=part7_w;
-d22offset = 9.93;
+d22offset = 7.53;
 
 
 difference()
