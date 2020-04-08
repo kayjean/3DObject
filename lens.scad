@@ -17,20 +17,21 @@ lug = 10;
 module lens()
 {    
     $fn=100;
+
+    //part2 , have to put here unknown reason
+    translate([0,0,part1_w]) rotate_extrude(angle=360, convexity=10, $fn = 100)
+    polygon(points=[[0,0],[0,part2_w],[part3_h/2,part2_w],[part1_h/2,0]]);
     
+    //part1
+    translate([0,0,-1]) cylinder(d=part1_h,h=part1_w+lug,center=false);
+
+    //old part2 translate([0,0,part1_w]) cylinder(d=part2_h,h=part2_w,center=false);
     
-    translate([0,0,-lug])
-    cylinder(d=part1_h,h=part1_w+2*lug,center=false);
-    translate([0,0,part1_w])
-    cylinder(d=part2_h,h=part2_w+lug,center=false);
-    translate([0,0,part1_w+part2_w])
-    cylinder(d=part3_h,h=part3_w,center=false);
-    translate([0,0,part1_w+part2_w+part3_w-lug])
-    cylinder(d=part4_h,h=part4_w+2*lug,center=false);
-    translate([0,0,part1_w+part2_w+part3_w+part4_w])
-    cylinder(d=part5_h,h=part5_w,center=false);
-    translate([0,0,part1_w+part2_w+part3_w+part4_w+part5_w-lug])
-    cylinder(d=part6_h,h=part6_w+2*lug,center=false);
+    translate([0,0,part1_w+part2_w]) cylinder(d=part3_h,h=part3_w,center=false);
+    translate([0,0,part1_w+part2_w+part3_w-lug]) cylinder(d=part4_h,h=part4_w+2*lug,center=false);
+    translate([0,0,part1_w+part2_w+part3_w+part4_w]) cylinder(d=part5_h,h=part5_w,center=false);
+    translate([0,0,part1_w+part2_w+part3_w+part4_w+part5_w-lug]) cylinder(d=part6_h,h=part6_w+2*lug,center=false);
+    
 }
 
 part7_w = 126;
@@ -50,6 +51,7 @@ maxh=85;
 maxw1=lens_total_w;
 maxw2=part7_w;
 d22offset = 9.93;
+
 
 
 difference()
@@ -95,4 +97,3 @@ translate([maxh/2,0,maxw1+maxw2])
     translate([0,0,lens_total_w]) d22();
 
 }
-
