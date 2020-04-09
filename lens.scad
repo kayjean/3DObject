@@ -34,19 +34,59 @@ module lens()
     
 }
 
+
+
+
 part7_w = 126;
 part7_h = 60.0;
+part7_wall = 3.0;
+
+part8_w = 13.22;
+part8_h = 63.0;
+part8_wall = 3.0;
 
 module d22()
 {
-    $fn=100;
-    box_x = 35;
-    box_y = 35;
-    box_z = 40;
-    cylinder(d=part7_h,h=part7_w+lug,center=false);
-    translate([0,-box_y/2,0]) cube([box_x,box_y,box_z]);
+    
+    
+    difference()
+    {
+            $fn=100;
+            box_x = 8.7;
+            box_y = 35;
+            box_z = 34;
+            box_upper = 3.5;
+        
+        union()
+        {
+            
+            translate([0,0,0]) cylinder(d=part7_h,h=part7_w+lug,center=false);
+            
+            translate([0,0,part7_w]) cylinder(d=part8_h,h=part8_w,center=false);
+            
+            translate([part7_h/2-box_x,-box_y/2,box_upper]) 
+                cube([box_x,box_y,box_z]);
+        }
+        union()
+        {
+            translate([0,0,-1]) cylinder(d=part7_h-2*part7_wall,h=part7_w+lug,center=false);
+            
+            translate([0,0,part7_w]) cylinder(d=part8_h-2*part8_wall,h=part8_w+lug,center=false);
+            
+        }
+        
+            translate([part7_h/2-box_x,-box_y/2,box_upper]) 
+                translate([box_x/2,box_z/2,box_z/2]) 
+                rotate([0,90,0]) cylinder(d=30,h=box_x+lug,center=true);
+
+    translate([-40,-21,-lug]) cube([50,42,38+lug]);
+        
+    }
 }
 
+d22();
+
+/*
 maxh=77;
 maxw1=lens_total_w;
 maxw2=part7_w;
@@ -94,6 +134,7 @@ translate([maxh/2,0,maxw1+maxw2])
 
     
     lens();
-    translate([0,0,lens_total_w]) d22();
+    translate([0,0,lens_total_w]) hull() d22();
 
 }
+*/
