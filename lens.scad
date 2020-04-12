@@ -110,10 +110,34 @@ module d22()
 }
 
 
-maxh=77;
+//d22();
+
+maxh=72;
 maxw1=lens_total_w;
 maxw2=part7_w;
 d22offset = 7.53;
+
+module 22dbase() {
+    
+    difference(){
+        cube([maxh+12,maxh,maxw2]);
+            
+        //top tringle
+        translate([maxh/2,-1,maxw2]) rotate([0,30,0]) cube([60,maxh+lug,40]);
+        
+        translate([maxh+10,-7,maxw2/2-2])
+        rotate([0,0,30]) 
+        cube([35,35,maxw2+lug], center=true );
+
+        translate([maxh+10,maxh+7,maxw2/2-2])
+        rotate([0,0,-30]) 
+        cube([35,35,maxw2+lug], center=true );
+       
+    }
+    
+}
+
+//22dbase();
 
 module plate() {
     difference()
@@ -127,8 +151,10 @@ module plate() {
             translate([0,-40,14.2]) cube([3.7,80,42]);
             
             //22d
-            translate([-maxh/2,-maxh/2,maxw1]) cube([maxh,maxh,maxw2]);
+            translate([-maxh/2,-maxh/2,maxw1]) 22dbase();
+            
         }
+        translate([-maxh/2*0.8,-maxh/2*0.8,maxw1+5]) scale(0.8,0.8,0.8) 22dbase();
         
         //lens box
         difference()
@@ -138,8 +164,6 @@ module plate() {
             translate([15,0,maxw1]) rotate([0,65,0]) cube([45,maxh+2*lug,45], center=true);
         }
         
-        //plate space
-        translate([0,-(maxh-2*lug)/2,maxw1+lug]) cube([maxh/2-lug,maxh-2*lug,maxw2-3*lug]);
 
         //d22 box
         union(){
@@ -152,8 +176,9 @@ module plate() {
             translate([-d22offset,-maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug], center=true);
         }
 
-        //top tringle
-        translate([maxh/2,0,maxw1+maxw2]) rotate([0,45,0]) cube([40,maxh+lug,40], center=true);
+        //plate space
+        //translate([0,-(maxh-2*lug)/2,maxw1+lug]) cube([maxh/2-lug+20,maxh-2*lug,maxw2-3*lug]);
+
         
         lens();
         translate([0,0,lens_total_w]) d22out();
