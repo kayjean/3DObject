@@ -125,7 +125,7 @@ module d22()
     }
 }
 
-//d22();
+d22();
 
 maxh=72;
 maxw1=lens_total_w;
@@ -135,7 +135,7 @@ d22offset = 7.53;
 module 22dbase() {
     
     difference(){
-        cube([maxh+20,maxh,maxw2]);
+        cube([maxh+19,maxh,maxw2]);
             
         //top tringle
         translate([maxh/2+4,-1,maxw2]) rotate([0,20,0]) cube([60,maxh+lug,40]);
@@ -162,7 +162,7 @@ module plate() {
             hull(){
                 translate([0,0,0]) cylinder(d=68.5,h=lens_total_w+10,center=false);
                 //19 65 72
-                translate([35,-(65+3)/2,9.3]) cube([20,65+3,72]);
+                translate([35,-(65+3)/2,12]) cube([20,65+3,72]);
             }
             //14 55 - 14 = 41
             translate([0,-40,14]) cube([3.7,80,41]);
@@ -173,6 +173,38 @@ module plate() {
         }
         
         
+
+        
+
+        //lens box
+        difference()
+        {
+            translate([-maxh/2-lug,-maxh/2-5,-lug]) cube([maxh/2+lug,maxh+lug,maxw1+lug]);
+            
+            translate([15,0,maxw1]) rotate([0,65,0]) cube([45,maxh+2*lug,45], center=true);
+        }
+        translate([0,-37,19]) rotate([0,-90,0]) screw("M3x6");
+        translate([0,-37,48]) rotate([0,-90,0]) screw("M3x6");
+        translate([0,37,19]) rotate([0,-90,0]) screw("M3x6");
+        translate([0,37,48]) rotate([0,-90,0]) screw("M3x6");
+        lens();
+        //65 19 71
+        translate([35,-65/2,0]) cube([19,65,(71+9.3)]);
+        //65 19 71
+        translate([40,10,63]) cube([20,20,15]);
+        
+
+        //d22 box
+        union(){
+            translate([-maxh/2-lug-d22offset,-maxh/2-lug/2,-lug/2+maxw1]) cube([maxh/2+lug,maxh+lug,maxw2+lug]);    
+
+            
+            //side trinagle
+            translate([-d22offset, maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug],center=true);
+            
+            //side trinagle    
+            translate([-d22offset,-maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug], center=true);
+        }
         translate([-maxh/2*0.9,-maxh/2*0.9,maxw1+10])
             difference()
         {
@@ -187,55 +219,19 @@ module plate() {
                 translate([-1,25.0,10.0]) rotate([0,-90,0]) screw("M3x6");
                 
             }
-
         }
+        translate([0,0,lens_total_w]) d22out();
+
+
         
-        //lens box
-        difference()
-        {
-            translate([-maxh/2-lug,-maxh/2-5,-lug]) cube([maxh/2+lug,maxh+lug,maxw1+lug]);
-            
-            translate([15,0,maxw1]) rotate([0,65,0]) cube([45,maxh+2*lug,45], center=true);
-        }
-        translate([0,-37,19]) rotate([0,-90,0]) screw("M3x6");
-        translate([0,-37,48]) rotate([0,-90,0]) screw("M3x6");
-        translate([0,37,19]) rotate([0,-90,0]) screw("M3x6");
-        translate([0,37,48]) rotate([0,-90,0]) screw("M3x6");
         
-
-        //d22 box
-        union(){
-            translate([-maxh/2-lug-d22offset,-maxh/2-lug/2,-lug/2+maxw1]) cube([maxh/2+lug,maxh+lug,maxw2+lug]);    
-            
-            //side trinagle
-            translate([-d22offset, maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug],center=true);
-            
-            //side trinagle    
-            translate([-d22offset,-maxh/2,-lug/2+maxw1+(maxw2+lug)/2]) rotate(45) cube([8.2,8.2,maxw2+lug], center=true);
-        }
-
-        //65 19 71
-        translate([35,-65/2,0]) cube([19,65,(71+9.3)]);
-        //65 19 71
-        translate([40,10,63]) cube([20,20,15]);
+        //connect d22 and lens
         translate([36,-23,70]) cube([5,5,30]);
         
-        lens();
-        translate([0,0,lens_total_w]) d22out();
 
 
     }
 }
 
-plate();
+//plate();
 
-/*
-            scale([0.9,0.9,0.9]) 22dbase();
-            translate([57,15,]) rotate([0,45,0]) cube([35,35,35]);
-            %translate([80,18,28]) 
-
-union(){
-cube([10,30,35]);
-translate([0,3.5,10.3]) rotate([0,-90,0]) screw("M3x6");
-}
-*/
