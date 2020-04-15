@@ -9,15 +9,17 @@ part1_w = 5.7;
 part1_h = 58.15;
 part2_w = 2.0;
 part2_h = 60;
-part3_w = 48;
-part3_h = 61.13;
+part3_1_w = 32;
+part3_1_h = 61.13;
+part3_2_w = 16;
+part3_2_h = 62.5;
 part4_w = 10.6;
 part4_h = 53.92;
 part5_w = 8.9;
 part5_h = 60.24;
 part6_w = 8.1;
 part6_h = 56.04;
-lens_total_w = part1_w+part2_w+part3_w+part4_w+part5_w+part6_w;
+lens_total_w = part1_w+part2_w+part3_1_w+part3_2_w+part4_w+part5_w+part6_w;
 
 //lens putter
 lens_out_h = 68.5;
@@ -25,20 +27,21 @@ lens_out_h = 68.5;
 module lens()
 {
     //part2 , have to put here unknown reason
-    translate([0,0,part1_w]) rotate_extrude(angle=360, convexity=10, $fn = 100) polygon(points=[[0,0],[0,part2_w],[part3_h/2,part2_w],[part1_h/2,0]]);
+    translate([0,0,part1_w]) rotate_extrude(angle=360, convexity=10, $fn = 100) polygon(points=[[0,0],[0,part2_w],[part3_1_h/2,part2_w],[part1_h/2,0]]);
     
     //part1
     translate([0,0,-1]) cylinder(d=part1_h,h=part1_w+lug,center=false);
 
     //old part2 translate([0,0,part1_w]) cylinder(d=part2_h,h=part2_w,center=false);
     
-    translate([0,0,part1_w+part2_w]) cylinder(d=part3_h,h=part3_w,center=false);
-    translate([0,0,part1_w+part2_w+part3_w-lug]) cylinder(d=part4_h,h=part4_w+2*lug,center=false);
-    translate([0,0,part1_w+part2_w+part3_w+part4_w]) cylinder(d=part5_h,h=part5_w,center=false);
-    translate([0,0,part1_w+part2_w+part3_w+part4_w+part5_w-lug]) cylinder(d=part6_h,h=part6_w+2*lug,center=false);
+    translate([0,0,part1_w+part2_w]) cylinder(d=part3_1_h,h=part3_1_w+5,center=false);
+    translate([0,0,part1_w+part2_w+part3_1_w]) cylinder(d=part3_2_h,h=part3_2_w,center=false);
+    
+    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)-1.5*lug]) cylinder(d=part4_h,h=part4_w+3*lug,center=false);
+    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)+part4_w]) cylinder(d=part5_h,h=part5_w,center=false);
+    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)+part4_w+part5_w-lug]) cylinder(d=part6_h,h=part6_w+2*lug,center=false);
     
 }
-
 //lens();
 
 module lenscover()
@@ -87,11 +90,45 @@ box_y = 35;
 box_z = 34;
 box_upper = 3.5;
 
+
+module mirror()
+{
+    difference(){
+        hull()
+        {
+            linear_extrude(height = 41.6, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[38,38],[38,0]]);
+            translate([41,10,10]) cube( [10,20,20]);
+        }
+        translate([-1,-1,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);    
+    }
+    
+    translate([12.7,0,12.7*2-5])
+    rotate([90,0,0])
+    difference(){
+        union()
+        {
+                cylinder(2,55/2,55/2);
+                translate([0,0,2]) cylinder(2,49/2,49/2);
+
+        }
+        translate([0,0,-1]) cylinder(6,12.7,12.7);
+        translate([-13,-13,2]) cube(26);
+
+    }
+    
+}
+
+//mirror();
+
+
 module d22inner()
 {
         union()
         {
-            translate([0,0,-1]) cylinder(d=part7_h-2*part7_wall,h=part7_w,center=false);
+            translate([0,0,0]) cylinder(d=part7_h-2*part7_wall,h=part7_w,center=false);
+            
+            //special for cut
+            translate([0,0,-3]) cylinder(d=55,h=5,center=false);
             
             translate([0,0,part7_w+2]) cylinder(d=part8_h-2*part8_wall,h=part8_w+lug,center=false);
 
@@ -99,17 +136,20 @@ module d22inner()
             
         }
         
-        translate([part7_h/2-box_x,-box_y/2,box_upper]) translate([box_x/2,box_z/2,box_z/2]) rotate([0,90,0]) cylinder(d=30,h=box_x+lug,center=true);
-
-        translate([-40,-21,-lug]) cube([50,42,38+lug]);
-        
+        //4 srews
         translate([part8_h/2,0,part7_w+part8_w+part8_w_plus/2-1]) rotate([0,90,0]) screw("M3x6");
         translate([-part8_h/2,0,part7_w+part8_w+part8_w_plus/2-1]) rotate([0,-90,0]) screw("M3x6");
         translate([0,-part8_h/2,part7_w+part8_w+part8_w_plus/2-1]) rotate([90,0,0]) screw("M3x6");
         translate([0,part8_h/2,part7_w+part8_w+part8_w_plus/2-1]) rotate([-90,0,0]) screw("M3x6");
+
+        // lens
+        translate([part7_h/2-box_x,-box_y/2,box_upper]) translate([box_x/2,box_z/2,box_z/2]) rotate([0,90,0]) cylinder(d=30,h=box_x+lug,center=true);
+
+        //mirror
+        translate([12.6,-20.3,4]) rotate([90,0,180]) mirror();
+        translate([-40,-21,-10]) cube([55,42,20]);
     
 }
-
 //d22inner();
 
 module d22out()
@@ -134,41 +174,8 @@ module d22()
 }
 
 //translate([0,0,-145]) d22();
+//d22();
 
-module mirror()
-{
-    translate([12.7,0,12.7*2-5])
-    rotate([90,0,0])
-    union()
-    {
-
-        difference(){
-            cylinder(2,54/2,54/2);
-            translate([0,0,-1]) cylinder(6,12.7,12.7);
-        }
-
-        difference(){
-            translate([0,0,2]) cylinder(2,49/2,49/2);
-            translate([-13,-13,-1]) cube(26);
-        }
-    }
-    
-        difference(){
-    
-    hull()
-    {
-        linear_extrude(height = 41.6, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[38,38],[38,0]]);
-        translate([41,10,10]) cube( [10,20,20]);
-                
-        }
-            translate([-1,-1,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);    
-
-        
-    }
-
-}
-
-//mirror();
 
 d22box_x=62.53;
 d22box_y=72;
