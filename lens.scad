@@ -254,14 +254,14 @@ module plate() {
         //big hole
         translate([31,-65/2,0]) cube([21,65,80.3]);
         //bottom hole
-        translate([40,12,20]) cube([80,16,55]);
-        translate([40,-10,20]) cube([80,16,55]);
-        translate([40,-32,20]) cube([80,16,55]);
 
-        translate([20,0,20]) cube([20,16,55]);
-        translate([20,-20,20]) cube([20,16,55]);
-        //translate([20,-32,20]) cube([20,16,55]);
+        translate([40,13,20]) cube([80,14,55]);
+        translate([40,-9,20]) cube([80,14,55]);
+        translate([40,-29,20]) cube([80,14,55]);
         
+        translate([20,4,20]) cube([20,16,55]);
+        translate([20,-20,20]) cube([20,16,55]);
+
         //connect d22 and lens
         translate([36,-23,70]) cube([5,5,30]);
         
