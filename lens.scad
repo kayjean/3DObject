@@ -79,7 +79,7 @@ part7_wall = 3.0;
 
 part8_w = 19.00;
 part8_w_plus = 5.00;
-part8_h = 66.4; //60.3
+part8_h = 68.4; //60.3
 part8_wall = 3.0;
 
 box_x = 8.7;
@@ -110,6 +110,8 @@ module d22inner()
     
 }
 
+//d22inner();
+
 module d22out()
 {
             translate([0,0,0]) cylinder(d=part7_h,h=part7_w+lug,center=false);
@@ -120,6 +122,8 @@ module d22out()
     
 }
 
+//d22out();
+
 module d22()
 {
     difference()
@@ -129,7 +133,7 @@ module d22()
     }
 }
 
-//d22();
+//translate([0,0,-145]) d22();
 
 module mirror()
 {
@@ -164,7 +168,7 @@ module mirror()
 
 }
 
-mirror();
+//mirror();
 
 d22box_x=62.53;
 d22box_y=72;
@@ -277,5 +281,5 @@ module plate() {
     translate([29,-32/2,89]) rotate([0,45,0]) cube([4,32,32]);
     
 }
-//plate();
+plate();
 
