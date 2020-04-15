@@ -131,7 +131,40 @@ module d22()
 
 //d22();
 
+module mirror()
+{
+    translate([12.7,0,12.7*2-5])
+    rotate([90,0,0])
+    union()
+    {
 
+        difference(){
+            cylinder(2,54/2,54/2);
+            translate([0,0,-1]) cylinder(6,12.7,12.7);
+        }
+
+        difference(){
+            translate([0,0,2]) cylinder(2,49/2,49/2);
+            translate([-13,-13,-1]) cube(26);
+        }
+    }
+    
+        difference(){
+    
+    hull()
+    {
+        linear_extrude(height = 41.6, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[38,38],[38,0]]);
+        translate([41,10,10]) cube( [10,20,20]);
+                
+        }
+            translate([-1,-1,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);    
+
+        
+    }
+
+}
+
+mirror();
 
 d22box_x=62.53;
 d22box_y=72;
@@ -221,9 +254,14 @@ module plate() {
         //big hole
         translate([31,-65/2,0]) cube([21,65,80.3]);
         //bottom hole
-        translate([20,12,20]) cube([80,16,55]);
-        translate([20,-10,20]) cube([80,16,55]);
-        translate([20,-32,20]) cube([80,16,55]);
+        translate([40,12,20]) cube([80,16,55]);
+        translate([40,-10,20]) cube([80,16,55]);
+        translate([40,-32,20]) cube([80,16,55]);
+
+        translate([20,0,20]) cube([20,16,55]);
+        translate([20,-20,20]) cube([20,16,55]);
+        //translate([20,-32,20]) cube([20,16,55]);
+        
         //connect d22 and lens
         translate([36,-23,70]) cube([5,5,30]);
         
@@ -239,5 +277,5 @@ module plate() {
     translate([29,-32/2,89]) rotate([0,45,0]) cube([4,32,32]);
     
 }
-plate();
+//plate();
 
