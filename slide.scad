@@ -90,5 +90,5 @@ flathead_radius = 2.6;
 clearance = 0.2;
 standoff = 6;
 
-slidingbolt(travel, radius, height, lip, clearance, bolt_radius, flathead_radius, standoff);
+slidingbolt(travel, radius, height, lip, clearance, bolt_radius, flathead_radius, standoff );
 

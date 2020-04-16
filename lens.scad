@@ -285,7 +285,7 @@ module plate() {
     translate([29,-32/2,89]) rotate([0,45,0]) cube([4,32,32]);
     
 }
-//plate();
+plate();
 
 
 /****************************************
@@ -413,7 +413,7 @@ module flattenedTube(size) {
     }
 }
 
-module lens() {
+module masklens() {
     rotate ([-90, 0, 0]) {
         cylinder(h=CaseSize.y+0.01, 
                  d1=LensDiameter, 
@@ -496,12 +496,12 @@ intersection() {
 
             // Left Lens
             translate([CenterLeftLens.x, 0, CenterLeftLens.y]) {
-                lens();
+                masklens();
             }
             
             // Right Lens
             translate([CenterRightLens.x, 0, CenterRightLens.y]) {
-                lens();
+                masklens();
             }
             
             // Nose hole
@@ -528,4 +528,4 @@ intersection() {
 
 
 //translate([28, 160, 36]) rotate([0,90,-90]) d22();
-finalcase();
+//finalcase();
