@@ -81,7 +81,7 @@ part7_h = 58.3; //52.3
 part7_wall = 3.0;
 
 part8_w = 19.00;
-part8_w_plus = 5.00;
+part8_w_plus = 10.00;
 part8_h = 68.4; //60.3
 part8_wall = 3.0;
 
@@ -93,31 +93,32 @@ box_upper = 3.5;
 
 module mirror()
 {
-    difference(){
-        hull()
-        {
-            linear_extrude(height = 41.6, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[38,38],[38,0]]);
-            translate([41,10,10]) cube( [10,20,20]);
-        }
-        translate([-1,-1,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);    
-    }
-    
-    translate([12.7,0,12.7*2-5])
+    //round
+    translate([16.5,2,20])
     rotate([90,0,0])
     difference(){
         union()
         {
                 cylinder(2,55/2,55/2);
                 translate([0,0,2]) cylinder(2,49/2,49/2);
-
         }
-        translate([0,0,-1]) cylinder(6,12.7,12.7);
-        translate([-13,-13,2]) cube(26);
-
+        translate([0,0,-1]) cylinder(6,12.5,12.5);
+        translate([-12.5,-12.5]) cube([25,25,4]);
     }
     
+    //tringle
+    difference(){
+        hull()
+        {
+            linear_extrude(height = 41.5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[40,40],[40,0]]);
+            translate([41,0,10]) cube( [10,40,20]);
+        }
+        
+        translate([35,37.5,-5]) cube( [20,20,50]);
+        
+        translate([-1,-1,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);    
+    }
 }
-
 //mirror();
 
 
@@ -127,28 +128,21 @@ module d22inner()
         {
             translate([0,0,0]) cylinder(d=part7_h-2*part7_wall,h=part7_w,center=false);
             
-            //special for cut
-            translate([0,0,-3]) cylinder(d=55,h=5,center=false);
             
             translate([0,0,part7_w+2]) cylinder(d=part8_h-2*part8_wall,h=part8_w+lug,center=false);
 
             translate([0,0,part7_w-2]) cylinder(d=part7_h-2*6.4,h=part8_w,center=false);
             
         }
-        
+
         //4 srews
-        translate([part8_h/2,0,part7_w+part8_w+part8_w_plus/2-1]) rotate([0,90,0]) screw("M3x6");
-        translate([-part8_h/2,0,part7_w+part8_w+part8_w_plus/2-1]) rotate([0,-90,0]) screw("M3x6");
-        translate([0,-part8_h/2,part7_w+part8_w+part8_w_plus/2-1]) rotate([90,0,0]) screw("M3x6");
-        translate([0,part8_h/2,part7_w+part8_w+part8_w_plus/2-1]) rotate([-90,0,0]) screw("M3x6");
+        translate([part8_h/2,0,part7_w+part8_w+part8_w_plus/2]) rotate([0,90,0]) screw("M5x10");
+        translate([-part8_h/2,0,part7_w+part8_w+part8_w_plus/2]) rotate([0,-90,0]) screw("M5x10");
+        translate([0,-part8_h/2,part7_w+part8_w+part8_w_plus/2]) rotate([90,0,0]) screw("M5x10");
+        translate([0,part8_h/2,part7_w+part8_w+part8_w_plus/2]) rotate([-90,0,0]) screw("M5x10");
 
         // lens
         translate([part7_h/2-box_x,-box_y/2,box_upper]) translate([box_x/2,box_z/2,box_z/2]) rotate([0,90,0]) cylinder(d=30,h=box_x+lug,center=true);
-
-        //mirror
-        translate([12.6,-20.3,4]) rotate([90,0,180]) mirror();
-        translate([-40,-21,-10]) cube([55,42,20]);
-    
 }
 //d22inner();
 
@@ -169,11 +163,18 @@ module d22()
     difference()
     {
         d22out();
+        
+        //mirror
+        translate([16.4,-20,2]) rotate([90,0,180]) mirror();
+        translate([16.4,-20,2]) rotate([90,0,180]) translate([20,-10,0]) cube( [50,20,41.5]);
+
+        //special for cut for mirror
+        translate([0,0,-8]) cylinder(d=55,h=10,center=false);
+        
         d22inner();
     }
 }
 
-//translate([0,0,-145]) d22();
 //d22();
 
 
@@ -263,15 +264,11 @@ module plate() {
         
         //battery
         //big hole
-        translate([31,-65/2,0]) cube([21,65,80.3]);
-        //bottom hole
-
-        translate([40,13,20]) cube([80,14,55]);
-        translate([40,-9,20]) cube([80,14,55]);
-        translate([40,-29,20]) cube([80,14,55]);
-        
-        translate([20,4,20]) cube([20,16,55]);
-        translate([20,-20,20]) cube([20,16,55]);
+        translate([33,-65/2,0]) cube([25,65,80.3]);
+        translate([43,65/2,30]) rotate([270,0,0]) screw("M3x6");
+        translate([43,65/2,60]) rotate([270,0,0]) screw("M3x6");
+        translate([43,-65/2,30]) rotate([90,0,0]) screw("M3x6");
+        translate([43,-65/2,60]) rotate([90,0,0]) screw("M3x6");
 
         //connect d22 and lens
         translate([36,-23,70]) cube([5,5,30]);
@@ -288,5 +285,247 @@ module plate() {
     translate([29,-32/2,89]) rotate([0,45,0]) cube([4,32,32]);
     
 }
-plate();
+//plate();
 
+
+/****************************************
+ * Generate VR Headset for Mobile Phone *
+ ****************************************/
+
+// TODO: Add mechanism to press against the phone screen for the primary trigger.
+// TODO: Lens flange slots don't actually allow the lenses to rotate into them.
+
+/*******************************
+ *   Adjustable Measurements   *
+ *                             *
+ * All measurements are in mm. *
+ *******************************/
+
+// Overall case size
+// Width, Depth, Height
+CaseSize = [140, 42, 75];
+
+// Interpupillary Distance
+IPD = 75;
+
+// Diameter of the lenses at the eyes
+LensDiameter = 34;
+
+// Diameter of the area of the screen 
+// that will be viewed
+ViewDiameterAtPhone = 60;
+
+// Width, Thickness, and Height of the 
+// protrusions on the lens that latch onto the frame.
+LensFlangeDimensions = [11, 2.5, 4];
+
+// Distance the lens is inset into the frame
+LensFlangeInset = 1;
+
+// Number of flanges around the edges of the lens
+NumberOfLensFlanges = 3;
+
+// Phone measurements
+// Height, Thickness, Width
+Phone = [140, 10, 75]; 
+
+// Thickness of the border that holds in the phone.
+PhoneHolderThickness = 1.5;
+
+// Nose Opening measurements
+// Width, depth, height
+NoseOpening = [45, 40, 40]; 
+
+// Face Guard measurements
+FaceGuardDepth = 50;
+FaceGuardThickness = 1;
+
+///////////////////////////
+// Internal Measurements //
+//     DO NOT CHANGE     //
+///////////////////////////
+
+// Derived lens measurements
+HalfIPD = IPD / 2;
+LensRadius = LensDiameter / 2;
+
+// Distance from the bottom of the case 
+// that indicates where the center of the lenses should be.
+LensVerticalDistance = Phone.z / 2;
+
+CenterLeftLens = [
+    CaseSize.x / 2 - HalfIPD, 
+    LensVerticalDistance];
+CenterRightLens = [
+    CaseSize.x / 2 + HalfIPD, 
+    LensVerticalDistance];
+   
+LensFlangeOpeningDimensions = [
+    LensFlangeDimensions.x,
+    LensFlangeDimensions.y + LensFlangeInset,
+    LensFlangeDimensions.z
+];
+    
+// Derived nose opening measurements
+NoseOpeningRatio = NoseOpening.y/NoseOpening.x;
+
+// Derived phone holder measurements
+PhoneHolder = [
+    CaseSize.x, 
+    Phone.y + PhoneHolderThickness, 
+    CaseSize.z];
+PhoneHolderInterior = [
+    Phone.x, 
+    Phone.y, 
+    PhoneHolder.z - PhoneHolderThickness];
+PhoneWidthOffset = (CaseSize.x - Phone.x) / 2;
+
+// Derived face guard measurements
+FaceGuard = [CaseSize.x, FaceGuardDepth, CaseSize.z];
+FaceGuardInterior = [
+    CaseSize.x - FaceGuardThickness * 2, 
+    FaceGuardDepth + 2, 
+    CaseSize.z - FaceGuardThickness * 2];
+FaceGuardArcRadius = FaceGuardInterior.x / 2;
+
+// Total size of the headset
+TotalSize = [
+    CaseSize.x,
+    CaseSize.y + PhoneHolder.y + FaceGuard.y,
+    CaseSize.z
+];
+
+// Dump key measurements to console for generating Cardboard profile
+echo("Key Measurements for Cardboard Profile:");
+echo(ScreenToLensDistance=CaseSize.y - 2);
+echo(InterLensDistance=IPD); 
+echo(TrayToLensCenterDistance=LensVerticalDistance);
+
+// Modules
+module flattenedTube(size) {
+    intersection() {
+        cube(size);
+        rotate ([-90, 0, 0]) {
+            translate([size.x / 2, -size.z / 2, 0]) {
+                cylinder(h=size.y, d=size.x, $fa=6);
+            }
+        }
+    }
+}
+
+module lens() {
+    rotate ([-90, 0, 0]) {
+        cylinder(h=CaseSize.y+0.01, 
+                 d1=LensDiameter, 
+                 d2=ViewDiameterAtPhone,
+                 $fa=6);
+    }
+
+    for (i = [0:360/NumberOfLensFlanges:360]) {
+        rotate([0, i, 0]) {
+            // Flange opening
+            translate([-(LensFlangeOpeningDimensions.x / 2), 0, LensRadius - LensFlangeOpeningDimensions.z]) {
+                cube([
+                    LensFlangeOpeningDimensions.x,
+                    LensFlangeOpeningDimensions.y,
+                    LensFlangeOpeningDimensions.z * 2]);
+            }
+            // Flange slot
+            slotRotation = atan((LensFlangeDimensions.x / 2) / (LensRadius + LensFlangeDimensions.z)) * 2;
+            rotate([0, -slotRotation, 0]) {
+                translate([-(LensFlangeDimensions.x / 2), LensFlangeInset, (LensRadius) - LensFlangeOpeningDimensions.z]) {
+                
+                    cube([
+                        LensFlangeDimensions.x,
+                        LensFlangeDimensions.y,
+                        LensFlangeDimensions.z * 2]);
+                }
+            }
+        }
+    }
+}
+
+module noseHole() {
+    scale([1, NoseOpeningRatio, 1]) {
+         union() {
+            cylinder(h=NoseOpening.z - 5, 
+                     d1=NoseOpening.x, 
+                     d2=10);
+        }
+        translate([0, 0, NoseOpening.z - 7.1]) {
+            sphere(d=11);
+        }
+    }
+}
+
+module phoneHolder() {
+    difference() {
+        cube(PhoneHolder);
+        translate([PhoneWidthOffset, 0, PhoneHolderThickness]) {
+            cube(PhoneHolderInterior);
+        }
+    }
+}
+
+module faceGuard() {
+    difference() {
+        flattenedTube(FaceGuard);
+        // Hollow out the inside of the face guard
+        translate([FaceGuardThickness, -1, FaceGuardThickness]) {
+            flattenedTube(FaceGuardInterior);
+        }
+        // Arc at the top and bottom
+        translate([FaceGuardArcRadius + FaceGuardThickness, -FaceGuardArcRadius + FaceGuard.y, 0]) {
+            cylinder(h=FaceGuard.z, r=FaceGuardArcRadius);
+        }
+        // Nose Opening Cutout
+        translate([(FaceGuard.x / 2) - (NoseOpening.x / 2), 0, 0]) {
+            cube([NoseOpening.x, FaceGuard.y, FaceGuardThickness]);
+        }
+    }
+}
+
+// Case
+module finalcase()
+{
+intersection() {
+    union() {
+        // Lens Holder
+        difference() {
+            cube(CaseSize);
+
+            // Left Lens
+            translate([CenterLeftLens.x, 0, CenterLeftLens.y]) {
+                lens();
+            }
+            
+            // Right Lens
+            translate([CenterRightLens.x, 0, CenterRightLens.y]) {
+                lens();
+            }
+            
+            // Nose hole
+            translate([CaseSize.x / 2, 0, 0]) {
+                noseHole();
+            }
+        }
+
+        // Phone Holder
+        //translate([0, CaseSize.y, 0]) {
+        //    phoneHolder();
+        //}
+        
+        // Face Guard
+        translate([0, -FaceGuard.y, 0]) {
+            faceGuard();
+        }
+    }
+    translate([0, -FaceGuard.y, 0]) {
+        flattenedTube(TotalSize);
+    }
+}
+}
+
+
+//translate([28, 160, 36]) rotate([0,90,-90]) d22();
+finalcase();
