@@ -235,7 +235,14 @@ module 22dinter()
     {
         //22d
         22dbase();
+        
+        difference()
+        {
         translate([d22box_x/20,d22box_y/20,maxw2/20]) scale([0.9,0.9,0.9]) 22dbase();
+            
+            translate([0,0,40])
+                cube([60,80,3]);
+        }
 
     }
 }
@@ -313,6 +320,17 @@ module plate() {
 }
 plate();
 
+/*
+difference()
+{
+    plate();
+    translate([-10,-50,-2]) cube([100,100,84]);
+    translate([-10,-50,100]) cube([100,100,700]);    
+    translate([-10,8,-2]) cube([100,100,184]);
+    translate([-10,-40,-2]) cube([100,32,184]);
+}
+*/
+
 
 /****************************
  * Generate Headset for 22D *
@@ -329,7 +347,7 @@ plate();
 // Overall case size
 // Width, Depth, Height
 //CaseSize = [140, 42, 75];
-CaseSize = [150, 29, 75];
+CaseSize = [160, 25, 80];
 
 // Interpupillary Distance
 IPD = 75;
@@ -366,7 +384,7 @@ LensRadius = LensDiameter / 2;
 
 // Distance from the bottom of the case 
 // that indicates where the center of the lenses should be.
-LensVerticalDistance = 0;
+LensVerticalDistance = 75/2;
 
 CenterLeftLens = [
     CaseSize.x / 2 - HalfIPD, 
@@ -449,6 +467,38 @@ module masklens() {
     }
 }
 
+module masklens2() {
+    rotate ([-90, 0, 0]) {
+        cylinder(h=CaseSize.y+0.01, 
+                 d1=LensDiameter, 
+                 $fa=6);
+    }
+
+    for (i = [0:360/NumberOfLensFlanges:360]) {
+        rotate([0, i, 0]) {
+            // Flange opening
+            translate([-(LensFlangeOpeningDimensions.x / 2), 0, LensRadius - LensFlangeOpeningDimensions.z]) {
+                cube([
+                    LensFlangeOpeningDimensions.x,
+                    LensFlangeOpeningDimensions.y,
+                    LensFlangeOpeningDimensions.z * 2]);
+            }
+            // Flange slot
+            slotRotation = atan((LensFlangeDimensions.x / 2) / (LensRadius + LensFlangeDimensions.z)) * 2;
+            rotate([0, -slotRotation, 0]) {
+                translate([-(LensFlangeDimensions.x / 2), LensFlangeInset, (LensRadius) - LensFlangeOpeningDimensions.z]) {
+                
+                    cube([
+                        LensFlangeDimensions.x,
+                        LensFlangeDimensions.y,
+                        LensFlangeDimensions.z * 2]);
+                }
+            }
+        }
+    }
+}
+
+
 module noseHole() {
     scale([1, NoseOpeningRatio, 1]) {
          union() {
@@ -489,6 +539,14 @@ intersection() {
         // Lens Holder
         difference() {
             cube(CaseSize);
+            
+            
+            // Left Lens
+            translate([CenterLeftLens.x, 40, CenterLeftLens.y]) {
+                rotate([90,0,0]) cylinder(h=50, d=70);
+                //masklens2();
+            }
+            
 /*
             // Left Lens
             translate([CenterLeftLens.x, 0, CenterLeftLens.y]) {
@@ -500,6 +558,8 @@ intersection() {
                 masklens();
             }
 */
+            
+/*            
 translate([37, 155, 38])
 rotate([0,90,-90])
 translate([0,0,-lens_total_w])
@@ -510,7 +570,7 @@ translate([0,0,-lens_total_w])
 
             translate([0,0,lens_total_w]) d22out();
 }
-
+*/
 
             
             // Nose hole
@@ -534,3 +594,15 @@ translate([0,0,-lens_total_w])
 }
 
 //finalcase();
+
+/*
+difference()
+{
+finalcase();
+translate([90,-150,-10]) cube([80,230,100]);    
+    
+//translate([0,-150,-10]) cube([90,230,100]);    
+//translate([90,5,-10]) cube([80,100,100]);    
+
+}
+*/
