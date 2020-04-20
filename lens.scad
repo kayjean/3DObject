@@ -30,16 +30,16 @@ module lens()
     translate([0,0,part1_w]) rotate_extrude(angle=360, convexity=10, $fn = 100) polygon(points=[[0,0],[0,part2_w],[part3_1_h/2,part2_w],[part1_h/2,0]]);
     
     //part1
-    translate([0,0,-1]) cylinder(d=part1_h,h=part1_w+lug,center=false);
+    translate([0,0,0]) cylinder(d=part1_h,h=part1_w,center=false);
 
     //old part2 translate([0,0,part1_w]) cylinder(d=part2_h,h=part2_w,center=false);
     
     translate([0,0,part1_w+part2_w]) cylinder(d=part3_1_h,h=part3_1_w+5,center=false);
     translate([0,0,part1_w+part2_w+part3_1_w]) cylinder(d=part3_2_h,h=part3_2_w,center=false);
     
-    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)-1.5*lug]) cylinder(d=part4_h,h=part4_w+3*lug,center=false);
+    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)]) cylinder(d=part4_h,h=part4_w,center=false);
     translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)+part4_w]) cylinder(d=part5_h,h=part5_w,center=false);
-    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)+part4_w+part5_w-lug]) cylinder(d=part6_h,h=part6_w+2*lug,center=false);
+    translate([0,0,part1_w+part2_w+(part3_1_w+part3_2_w)+part4_w+part5_w]) cylinder(d=part6_h,h=part6_w+2,center=false);
     
 }
 //lens();
@@ -49,21 +49,26 @@ module lenscover()
     difference(){
         union()
         {
+            //whole body
+            hull() scale([1.06,1.06,1]) lens();
+            //translate([0,0,0]) cylinder(d=lens_out_h,h=lens_total_w,center=false);
             
-            translate([0,0,0]) cylinder(d=lens_out_h,h=lens_total_w,center=false);
             //nutch plate
             translate([-3.7,-40,14]) cube([3.7,80,41]);
         }
 
-        translate([0,-d22box_y/2-5,-lug]) cube([d22box_y/2+lug,d22box_y+lug,maxw1+lug]);
-            
-        translate([15,0,maxw1]) rotate([0,65,0]) cube([40,d22box_y+2*lug,40], center=true);
+        // another part
+        translate([0,-d22box_y/2,0]) cube([d22box_y/2,d22box_y,maxw1]);
+
+        //triangle
+        translate([15,0,maxw1]) rotate([0,65,0]) cube([40,d22box_y,40], center=true);
 
         lens();
 
-        //40 54
+        //space for manual focus
         translate([-45,-25,40]) cube([20,50,14]);
-        
+
+        // 4 screw
         translate([0,-37,19]) rotate([0,90,0]) screw("M3x6");
         translate([0,-37,48]) rotate([0,90,0]) screw("M3x6");
         translate([0,37,19]) rotate([0,90,0]) screw("M3x6");
@@ -197,8 +202,10 @@ module d22()
 //d22();
 
 
-d22box_x=62.53;
-d22box_y=72;
+//d22box_x=62.53;
+//d22box_y=72;
+d22box_x=72.53;
+d22box_y=73;
 
 maxw1=lens_total_w;
 maxw2=part7_w;
@@ -212,11 +219,9 @@ module 22dbase() {
         //top tringle
         translate([d22box_x/2,-1,maxw2]) rotate([0,20,0]) cube([60,d22box_y+lug,40]);
         
-        translate([d22box_x,-7,maxw2/2-2])
-        rotate([0,0,30]) 
-        cube([35,35,maxw2+lug], center=true );
+        translate([d22box_x,-10,maxw2/2-2]) rotate([0,0,30]) cube([35,35,maxw2+lug], center=true );
 
-        translate([d22box_x,d22box_y+7,maxw2/2-2])
+        translate([d22box_x,d22box_y+10,maxw2/2-2])
         rotate([0,0,-30]) 
         cube([35,35,maxw2+lug], center=true );
         
@@ -240,9 +245,15 @@ module 22dinter()
         {
         translate([d22box_x/20,d22box_y/20,maxw2/20]) scale([0.9,0.9,0.9]) 22dbase();
             
-            translate([0,0,40])
-                cube([60,80,3]);
+            //flash
+            translate([0,0,52])
+                cube([d22box_x,d22box_y,3]);
         }
+        
+        //flash
+        translate([37-20,  d22box_y/2-35/2  ,51])
+                cube([26+20,35,6]);
+        
 
     }
 }
@@ -258,9 +269,10 @@ module plate() {
         {
             //lens and battery
             hull(){
-                translate([0,0,0]) cylinder(d=68.5,h=lens_total_w,center=false);
+                hull() scale([1.06,1.06,1]) lens();
                 //battery
-                translate([35,-(65+3)/2,12]) cube([20,65+3,72]);
+                //76 41 20
+                translate([33,-(41+4)/2,8]) cube([20,41+4,76]);
             }
             
             //lens plate
@@ -269,15 +281,15 @@ module plate() {
             //22d
             translate([-d22offset,-d22box_y/2,maxw1]) 22dinter();
             
-            
-            translate([40,-5,88]) cube([15,10,10]);
+            //for laptop
+            translate([50,-5,88]) cube([15,10,10]);
         }
 
         //lens box
         difference(){
-            translate([-d22box_y/2-lug,-d22box_y/2-5,-lug+1]) cube([d22box_y/2+lug,d22box_y+lug,maxw1+lug]);
+            translate([-d22box_y/2,-d22box_y/2-2,-2]) cube([d22box_y/2,d22box_y,maxw1+5]);
             
-            translate([15,0,maxw1]) rotate([0,65,0]) cube([40,d22box_y+2*lug,40], center=true);
+            translate([15,0,maxw1]) rotate([0,65,0]) cube([40,d22box_y,40], center=true);
         }
         
         translate([0,-37,19]) rotate([0,-90,0]) screw("M3x6");
@@ -293,29 +305,34 @@ module plate() {
         
         //battery
         //big hole
-        translate([33,-65/2,0]) cube([25,65,80.3]);
-        translate([43,65/2,30]) rotate([270,0,0]) screw("M3x6");
-        translate([43,65/2,60]) rotate([270,0,0]) screw("M3x6");
-        translate([43,-65/2,30]) rotate([90,0,0]) screw("M3x6");
-        translate([43,-65/2,60]) rotate([90,0,0]) screw("M3x6");
+        translate([33,-(41)/2,0]) cube([20,41,88]);        
+        translate([33,9,8+76/2-4]) rotate([0,90,0]) screw("M3x6");
+        translate([33,-9,8+76/2-4]) rotate([0,90,0]) screw("M3x6");
 
         //connect d22 and lens
-        translate([36,-23,70]) cube([5,5,30]);
+        translate([44,-3,70]) cube([6,6,30]);
         
         //bottom
-        translate([48,11.5,130]) rotate([0,-90,0]) screw("M3x6");
-        translate([48,-11.5,130]) rotate([0,-90,0]) screw("M3x6");
-        translate([48,11.5,144]) rotate([0,-90,0]) screw("M3x6");
-        translate([48,-11.5,144]) rotate([0,-90,0]) screw("M3x6");
+        translate([58,11.5,150]) rotate([0,-90,0]) screw("M3x6");
+        translate([58,-11.5,150]) rotate([0,-90,0]) screw("M3x6");
+        translate([58,11.5,164]) rotate([0,-90,0]) screw("M3x6");
+        translate([58,-11.5,164]) rotate([0,-90,0]) screw("M3x6");
 
         
-        translate([56,0,92]) rotate([0,90,0]) screw("M8x12");
+        translate([68,0,92]) rotate([0,90,0]) screw("M8x12");
+
+
+        //flash
+        translate([30,-28,170]) cube([30,57,2.7]);
 
     }
     
+    //test
+    //translate([55,-15,90]) cube([35,30,25]);
+        
+    
     //bottom
-    translate([29,-32/2,89]) rotate([0,45,0]) cube([4,32,32]);
-
+    translate([38,-32/2,91]) rotate([0,45,0]) cube([4,32,32]);
     
 }
 plate();
