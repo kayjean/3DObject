@@ -96,6 +96,7 @@ stud_rescale = 1;
 //stud_rescale = 1.0475 * 1; // Orion Delta, T-Glase
 //stud_rescale = 1.022 * 1; // Orion Delta, ABS
 
+/*
 // Print tiles upside down.
 translate([0, 0, (block_type == "tile" ? block_height_ratio * block_height : 0)]) rotate([0, (block_type == "tile" ? 180 : 0), 0]) {
     block(
@@ -126,7 +127,7 @@ translate([0, 0, (block_type == "tile" ? block_height_ratio * block_height : 0)]
         dual_bottom=(dual_bottom=="yes")
     );
 }
-
+*/
 module block(
     width=1,
     length=2,
@@ -155,7 +156,8 @@ module block(
     dual_bottom=false
     ) {
     post_wall_thickness = (brand == "lego" ? 0.85 : 1);
-    wall_thickness=(brand == "lego" ? 1.45 : 1.5);
+    //kayjean wall_thickness=(brand == "lego" ? 1.45 : 1.5);
+        wall_thickness=(brand == "lego" ? 1.20 : 1.5);
     stud_diameter=(brand == "lego" ? 4.85 : 9.35);
     hollow_stud_inner_diameter = (brand == "lego" ? 3.1 : 6.7);
     stud_height=(brand == "lego" ? 1.8 : 4.4);
@@ -813,3 +815,12 @@ module uncenter(width, length, height) {
 module place(x, y, z=0) {
     translate([8 * y, 8 * x, z * 9.6]) children();
 }
+
+/*
+rotate([0,180,0])
+block(
+        width=4,
+        length=3,
+        type="tile"
+    );
+*/
