@@ -155,14 +155,21 @@ module block(
     dual_sided=false,
     dual_bottom=false
     ) {
-    post_wall_thickness = (brand == "lego" ? 0.85 : 1);
+    //kayjean post_wall_thickness = (brand == "lego" ? 0.85 : 1);
+        
+    post_wall_thickness = 0.6;
+        
     //kayjean wall_thickness=(brand == "lego" ? 1.45 : 1.5);
-        wall_thickness=(brand == "lego" ? 1.20 : 1.5);
+        //bottom wall_thickness=(brand == "lego" ? 1.20 : 1.5);
+    wall_thickness=(brand == "lego" ? 1.00 : 1.5);
     stud_diameter=(brand == "lego" ? 4.85 : 9.35);
     hollow_stud_inner_diameter = (brand == "lego" ? 3.1 : 6.7);
     stud_height=(brand == "lego" ? 1.8 : 4.4);
     stud_spacing=(brand == "lego" ? 8 : 8 * 2);
-    block_height=(brand == "lego" ? (type == "baseplate" ? 1.3 : 9.6) : 9.6 * 2);
+    //kayjean block_height=(brand == "lego" ? (type == "baseplate" ? 1.3 : 9.6) : 9.6 * 2);
+        
+    block_height=(brand == "lego" ? (type == "baseplate" ? 1.3 : 4.8) : 9.6 * 2);
+        
     pin_diameter=(brand == "lego" ? 3 : 3 * 2);
     post_diameter=(brand == "lego" ? 6.5 : 13.2);
     cylinder_precision=(brand == "lego" ? 0.1 : 0.05);
@@ -816,11 +823,10 @@ module place(x, y, z=0) {
     translate([8 * y, 8 * x, z * 9.6]) children();
 }
 
-/*
+
 rotate([0,180,0])
 block(
         width=4,
         length=3,
         type="tile"
     );
-*/
