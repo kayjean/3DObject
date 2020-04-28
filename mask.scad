@@ -1,243 +1,275 @@
+
+/****************************
+ * Generate Headset for 22D *
+ ****************************/
+
+// TODO: Lens flange slots don't actually allow the lenses to rotate into them.
+
+/*******************************
+ *   Adjustable Measurements   *
+ *                             *
+ * All measurements are in mm. *
+ *******************************/
+
+// Overall case size
+// Width, Depth, Height
+//CaseSize = [140, 42, 75];
+CaseSize = [160, 25, 80];
+
+// Interpupillary Distance
+IPD = 75;
+
+// Diameter of the lenses at the eyes
+LensDiameter = 34;
+
+// Width, Thickness, and Height of the 
+// protrusions on the lens that latch onto the frame.
+LensFlangeDimensions = [11, 2.5, 4];
+
+// Distance the lens is inset into the frame
+LensFlangeInset = 1;
+
+// Number of flanges around the edges of the lens
+NumberOfLensFlanges = 3;
+
+// Nose Opening measurements
+// Width, depth, height
+NoseOpening = [35, 40, 40]; 
+
+// Face Guard measurements
+FaceGuardDepth = 50;
+FaceGuardThickness = 1;
+
+///////////////////////////
+// Internal Measurements //
+//     DO NOT CHANGE     //
+///////////////////////////
+
+// Derived lens measurements
+HalfIPD = IPD / 2;
+LensRadius = LensDiameter / 2;
+
+// Distance from the bottom of the case 
+// that indicates where the center of the lenses should be.
+LensVerticalDistance = 75/2;
+
+CenterLeftLens = [
+    CaseSize.x / 2 - HalfIPD, 
+    LensVerticalDistance];
+CenterRightLens = [
+    CaseSize.x / 2 + HalfIPD, 
+    LensVerticalDistance];
+   
+LensFlangeOpeningDimensions = [
+    LensFlangeDimensions.x,
+    LensFlangeDimensions.y + LensFlangeInset,
+    LensFlangeDimensions.z
+];
+    
+// Derived nose opening measurements
+NoseOpeningRatio = NoseOpening.y/NoseOpening.x;
+
+
+// Derived face guard measurements
+FaceGuard = [CaseSize.x, FaceGuardDepth, CaseSize.z];
+FaceGuardInterior = [
+    CaseSize.x - FaceGuardThickness * 2, 
+    FaceGuardDepth + 2, 
+    CaseSize.z - FaceGuardThickness * 2];
+FaceGuardArcRadius = FaceGuardInterior.x / 2;
+
+// Total size of the headset
+TotalSize = [
+    CaseSize.x,
+    CaseSize.y + FaceGuard.y,
+    CaseSize.z
+];
+
+// Dump key measurements to console for generating Cardboard profile
+echo("Key Measurements for Cardboard Profile:");
+echo(ScreenToLensDistance=CaseSize.y - 2);
+echo(InterLensDistance=IPD); 
+//echo(TrayToLensCenterDistance=LensVerticalDistance);
+
+// Modules
+module flattenedTube(size) {
+    intersection() {
+        cube(size);
+        rotate ([-90, 0, 0]) {
+            translate([size.x / 2, -size.z / 2, 0]) {
+                cylinder(h=size.y, d=size.x, $fa=6);
+            }
+        }
+    }
+}
+
+module masklens() {
+    rotate ([-90, 0, 0]) {
+        cylinder(h=CaseSize.y+0.01, 
+                 d1=LensDiameter, 
+                 $fa=6);
+    }
+
+    for (i = [0:360/NumberOfLensFlanges:360]) {
+        rotate([0, i, 0]) {
+            // Flange opening
+            translate([-(LensFlangeOpeningDimensions.x / 2), 0, LensRadius - LensFlangeOpeningDimensions.z]) {
+                cube([
+                    LensFlangeOpeningDimensions.x,
+                    LensFlangeOpeningDimensions.y,
+                    LensFlangeOpeningDimensions.z * 2]);
+            }
+            // Flange slot
+            slotRotation = atan((LensFlangeDimensions.x / 2) / (LensRadius + LensFlangeDimensions.z)) * 2;
+            rotate([0, -slotRotation, 0]) {
+                translate([-(LensFlangeDimensions.x / 2), LensFlangeInset, (LensRadius) - LensFlangeOpeningDimensions.z]) {
+                
+                    cube([
+                        LensFlangeDimensions.x,
+                        LensFlangeDimensions.y,
+                        LensFlangeDimensions.z * 2]);
+                }
+            }
+        }
+    }
+}
+
+module masklens2() {
+    rotate ([-90, 0, 0]) {
+        cylinder(h=CaseSize.y+0.01, 
+                 d1=LensDiameter, 
+                 $fa=6);
+    }
+
+    for (i = [0:360/NumberOfLensFlanges:360]) {
+        rotate([0, i, 0]) {
+            // Flange opening
+            translate([-(LensFlangeOpeningDimensions.x / 2), 0, LensRadius - LensFlangeOpeningDimensions.z]) {
+                cube([
+                    LensFlangeOpeningDimensions.x,
+                    LensFlangeOpeningDimensions.y,
+                    LensFlangeOpeningDimensions.z * 2]);
+            }
+            // Flange slot
+            slotRotation = atan((LensFlangeDimensions.x / 2) / (LensRadius + LensFlangeDimensions.z)) * 2;
+            rotate([0, -slotRotation, 0]) {
+                translate([-(LensFlangeDimensions.x / 2), LensFlangeInset, (LensRadius) - LensFlangeOpeningDimensions.z]) {
+                
+                    cube([
+                        LensFlangeDimensions.x,
+                        LensFlangeDimensions.y,
+                        LensFlangeDimensions.z * 2]);
+                }
+            }
+        }
+    }
+}
+
+
+module noseHole() {
+    scale([1, NoseOpeningRatio, 1]) {
+         union() {
+            cylinder(h=NoseOpening.z - 5, 
+                     d1=NoseOpening.x, 
+                     d2=10);
+        }
+        translate([0, 0, NoseOpening.z - 7.1]) {
+            sphere(d=11);
+        }
+    }
+}
+
+
+module faceGuard() {
+    difference() {
+        flattenedTube(FaceGuard);
+        // Hollow out the inside of the face guard
+        translate([FaceGuardThickness, -1, FaceGuardThickness]) {
+            flattenedTube(FaceGuardInterior);
+        }
+        // Arc at the top and bottom
+        translate([FaceGuardArcRadius + FaceGuardThickness, -FaceGuardArcRadius + FaceGuard.y, 0]) {
+            cylinder(h=FaceGuard.z, r=FaceGuardArcRadius);
+        }
+        // Nose Opening Cutout
+        translate([(FaceGuard.x / 2) - (NoseOpening.x / 2), 0, 0]) {
+            cube([NoseOpening.x, FaceGuard.y, FaceGuardThickness]);
+        }
+    }
+}
+
+// Case
+module finalcase()
+{
+intersection() {
+    union() {
+        // Lens Holder
+        difference() {
+            cube(CaseSize);
+            
+            
+            // Left Lens
+            translate([CenterLeftLens.x, 40, CenterLeftLens.y]) {
+                rotate([90,0,0]) cylinder(h=50, d=70);
+                //masklens2();
+            }
+            
 /*
-Decora Switch Extension
-Chris Whiteford
+            // Left Lens
+            translate([CenterLeftLens.x, 0, CenterLeftLens.y]) {
+                masklens();
+            }
+            
+            // Right Lens
+            translate([CenterRightLens.x, 0, CenterRightLens.y]) {
+                masklens();
+            }
+*/
+            
+/*            
+translate([37, 155, 38])
+rotate([0,90,-90])
+translate([0,0,-lens_total_w])
+    union()
+{
+            //22d
+            //translate([-d22offset,-d22box_y/2,maxw1]) 22dinter();
 
-Based on https://github.com/danmarshall/openscad-decora-switch-extension
-
-Also using some of the techniques and code from http://www.nothinglabs.com/puzzlecut-openscad-library/
+            translate([0,0,lens_total_w]) d22out();
+}
 */
 
-
-//You'll need the sliding-bolt.scad file from https://github.com/danmarshall/openscad-sliding-bolt in the same directory as this file as its used to generate a major part of the item
-use <slide.scad>;
-
-buildSwitch = true;
-buildExtension = false;
-buildHandle = false;
-
-inner_radius = 7;
-travel = 35;
-spacing = 96.8375;
-height = 6;
-standoff = 7;
-decora_switch_face = 2;
-
-extension_length = 150;
-handle_radius = 500;
-
-use_handle = false;
-handle_length = 13;
-handle_height = 8;
-handle_fillet = 3;
-handle_radius = 4;
-
-
-
-module main() {
-	$fn = 25;
-	
-	outer_radius = height / 2 + inner_radius + 1.5;
-	square = 2 * outer_radius;
-
-	module tcube(x, y, z, tx = 0, ty = 0, tz = 0) {
-		translate([tx, ty, tz]) {
-			cube([x, y, z]);
-		}
-	}
-
-	module ccube(x, y, z, ty, tz) {
-		tcube(x, y, z, -x / 2, ty, tz);
-	}
-
-	module mirror2(v = [1, 0, 0]) {
-		children();
-		mirror(v) {
-			children();
-		}
-	}
-
-	module slider(action) {
-		slidingbolt(travel, inner_radius, height, 1, 0.3, 2, 2.6, standoff, action);
-	}
-
-	module roundedslidertracks() {
-		difference() {
-			union() {
-				translate([-outer_radius, -outer_radius, 0]) {
-					cube([square, travel + outer_radius + spacing, height]);
-				}
-
-				translate([0, spacing + travel, 0]) {
-					cylinder(r = outer_radius, h = height);
-				}
-			}
-
-			slider("track");
-
-			translate([0, spacing, 0]) {
-				slider("track");
-			}
-		}
-	}
-
-	module slidemount() {
-		rotate([0, 0, 180]) {
-			translate([0, outer_radius, 0]) {
-				roundedslidertracks();
-
-				translate([0, travel, 0]) {
-					slider("bolt");
-				}
-
-				translate([0, spacing, 0]) {
-					slider("bolt");
-				}
-			}
-		}
-	}
-
-	module decoratouch() {
-		r = standoff - decora_switch_face + 1;
-		translate([0, 0, height]) {
-			rotate([0, 90, 0]) {
-				cylinder(h = square, r = r, center = true);
-			}
-		}
-	}
-
-	module handle() {
-		translate([0, handle_height, 0]) {
-			difference() {
-				ccube(square + 2 * handle_fillet, handle_fillet + 1, height);
-
-				mirror2() {
-					translate([outer_radius + handle_fillet, 0, 0]) {
-						cylinder(r = handle_fillet, h = height);
-					}
-				}
-			}
-			hull() {
-				mirror2() {
-					translate([outer_radius + handle_length, handle_fillet + handle_radius, 0]) {
-						cylinder(r = handle_radius, h = height);
-					}
-				}
-			}
-		}
-		ccube(square, handle_height + 1, height, -.01);
-	}
-    
-    module connector(type=1, cutLocations = [0]) {
-        if (type == 0)
-        {
-            //Female connector
-            xFemaleCut(cutLocations=cutLocations, cutSize = 15, kerf=-0.10) children([0]);
+            
+            // Nose hole
+            translate([CaseSize.x / 2, 0, 0]) {
+                noseHole();
+            }
         }
-        else
-        {
-            //Male connector
-            xMaleCut(cutLocations=cutLocations, cutSize = 15) children([0]);
+        
+        // Face Guard
+        translate([0, -FaceGuard.y, 0]) {
+            faceGuard();
         }
         
     }
-    
-    
-    module xFemaleCut(offset = 0, cutLocations = [], cutSize = 4, kerf = 0)
-    {
-        intersection()
-        {
-            children([0]);            
-            translate([0,offset,0]) makePuzzleStamp(kerf = kerf, cutSize = cutSize, cutLocations = cutLocations);	//only set kerf on female side
-        }
-    }
-    
-    module xMaleCut(offset = 0, cutLocations = [], cutSize = 4)
-    {
-        difference()
-        {
-            children([0]); 	
-            translate([0,offset,0]) makePuzzleStamp(cutSize = cutSize, cutLocations = cutLocations);
-        }
-    }
-    
-    module makePuzzleStamp(kerf = 0, cutSize = 4, cutLocations = [])
-    {
-        stampSize = [500,500,500];
-        
-        difference()
-        {
-            //make the cube
-            translate ([0,stampSize[0] / 2 - kerf,0])
-                cube (stampSize, center = true);
-            
-            //make the cuts
-            for ( i = cutLocations )
-            {
-                translate([i,0,0])
-                    cube ([(cutSize / 2) - kerf * 2, cutSize - kerf * 2,stampSize[2]], center = true);
-                
-                translate([i,cutSize / 1.5,0])
-                    cube ([cutSize - kerf *  2,(cutSize / 2) - kerf * 2, stampSize[2]], center = true);
-            }		
-        }
-    }
 
-
-    if (buildSwitch) {
-        //Build the main switch body (this gets attached to the switchplate)
-        translate([0, outer_radius + travel + (spacing - travel) / 2, 0]) {
-            slidemount();
-            
-            if (use_handle) {
-                handle();
-            }
-            else {
-                connector(type=1) {
-                    translate([-(square/2),0,0])
-                    {
-                        cube([square,20,height]);
-                    }
-                }
-            }
-        }
-
-        decoratouch();
-    }
-    else if (buildExtension) {
-        connector(type=1) {
-            translate([0,-extension_length,0]) {
-                connector(type=0) {
-                    translate([-(square/2),0,0]) {
-                        cube([square,extension_length + 15,height]);
-                    }
-                }
-            }
-        }
-    }
-    else if (buildHandle) {
-        union() {
-            translate([0,50,0]) {
-                rotate([180,0,0]) {
-                    connector(type=0) {
-                        translate([-(square/2),0,0]) {
-                            cube([square, 50, height]);
-                        }
-                    }
-                }
-            }
-            translate([0,-(40-5),-height]) {
-                difference() {
-                    linear_extrude (height = height) {
-                        circle(r = 40);
-                    }
-                    linear_extrude (height = height) {
-                       circle(r=30);
-                    }
-                }
-            }
-        }
+    translate([0, -FaceGuard.y, 0]) {
+        flattenedTube(TotalSize);
     }
 
 }
+}
 
-main();
+finalcase();
+
+/*
+difference()
+{
+finalcase();
+translate([90,-150,-10]) cube([80,230,100]);    
+    
+//translate([0,-150,-10]) cube([90,230,100]);    
+//translate([90,5,-10]) cube([80,100,100]);    
+
+}
+*/
