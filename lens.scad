@@ -1,6 +1,7 @@
 
 include <cyl_head_bolt.scad>;
 
+
 $fn=200;
 lug = 10;
 
@@ -267,13 +268,8 @@ module plate() {
         //whole cube
         union()
         {
-            //lens and battery
-            hull(){
-                hull() scale([1.06,1.06,1]) lens();
-                //battery
-                //76 41 20
-                translate([33,-(41+4)/2,8]) cube([20,41+4,76]);
-            }
+            //lens
+            hull() scale([1.06,1.06,1]) lens();
             
             //lens plate
             translate([0,-40,14]) cube([3.7,80,41]);
@@ -281,8 +277,6 @@ module plate() {
             //22d
             translate([-d22offset,-d22box_y/2,maxw1]) 22dinter();
             
-            //for laptop
-            translate([50,-5,88]) cube([15,10,10]);
         }
 
         //lens box
@@ -302,49 +296,41 @@ module plate() {
             lens();
             translate([0,0,lens_total_w]) d22out();
         }
-        
-        //battery
-        //big hole
-        translate([33,-(41)/2,0]) cube([20,41,88]);        
-        translate([33,9,8+76/2-4]) rotate([0,90,0]) screw("M3x6");
-        translate([33,-9,8+76/2-4]) rotate([0,90,0]) screw("M3x6");
-
-        //connect d22 and lens
-        translate([44,-3,70]) cube([6,6,30]);
-        
-        //bottom
-        translate([58,11.5,150]) rotate([0,-90,0]) screw("M3x6");
-        translate([58,-11.5,150]) rotate([0,-90,0]) screw("M3x6");
-        translate([58,11.5,164]) rotate([0,-90,0]) screw("M3x6");
-        translate([58,-11.5,164]) rotate([0,-90,0]) screw("M3x6");
-
-        
-        translate([68,0,92]) rotate([0,90,0]) screw("M8x12");
-
-
-        //flash
-        translate([30,-28,170]) cube([30,57,2.7]);
-
     }
     
-    //test
-    //translate([55,-15,90]) cube([35,30,25]);
-        
-    
-    //bottom
-    translate([38,-32/2,91]) rotate([0,45,0]) cube([4,32,32]);
-    
 }
-plate();
+//plate();
 
-/*
+use <LEGO.scad>;
+
+
 difference()
 {
-    plate();
-    translate([-10,-50,-2]) cube([100,100,84]);
-    translate([-10,-50,100]) cube([100,100,700]);    
-    translate([-10,8,-2]) cube([100,100,184]);
-    translate([-10,-40,-2]) cube([100,32,184]);
+plate();
+translate([35,-50,0]) cube([100,100,1000]);
 }
-*/
 
+
+
+spacecube = 50;
+difference()
+{
+translate([39,0,145])
+rotate([0,-90,0])
+block(
+        type="tile",
+        width=10,
+        length=16,
+        onlykeepone=true
+    );
+translate([30,-spacecube/2,90]) cube([10,spacecube,110]);
+    
+}
+
+/*
+block(
+        type="tile",
+        width=10,
+        length=16
+    );
+*/

@@ -153,7 +153,8 @@ module block(
     roadway_y=0,
     stud_rescale=1,
     dual_sided=false,
-    dual_bottom=false
+    dual_bottom=false,
+    onlykeepone =false
     ) {
     //kayjean post_wall_thickness = (brand == "lego" ? 0.85 : 1);
         
@@ -281,9 +282,13 @@ module block(
                         translate([(overall_length - total_studs_length)/2, (overall_width - total_studs_width)/2, 0]) {
                             for (ycount=[0:real_width-1]) {
                                 for (xcount=[0:real_length-1]) {
+                                    
+
                                     if (!skip_this_stud(xcount, ycount)) {
                                         translate([xcount*stud_spacing,ycount*stud_spacing,block_height*real_height]) stud();
                                     }
+                                    
+                                    
                                 }
                             }
                        }
@@ -308,6 +313,7 @@ module block(
                                     // Posts
                                     for (ycount=[1:real_width-1]) {
                                         for (xcount=[1:real_length-1]) {
+                                            if( ((onlykeepone == true) && (ycount == 1 || xcount == 1 || ycount == real_width-1 || xcount == real_length-1)) ||  onlykeepone == false )
                                             translate([(xcount-1)*stud_spacing,(ycount-1)*stud_spacing,0]) post(real_vertical_axle_holes && !skip_this_vertical_axle_hole(xcount, ycount));
                                         }
                                     }
@@ -826,7 +832,7 @@ module place(x, y, z=0) {
 
 rotate([0,180,0])
 block(
-        width=4,
-        length=3,
+        width=14,
+        length=13,
         type="tile"
     );
