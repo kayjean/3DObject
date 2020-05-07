@@ -1,8 +1,7 @@
 
 include <cyl_head_bolt.scad>;
 
-
-$fn=200;
+$fn=120;
 lug = 10;
 
 //lens inner
