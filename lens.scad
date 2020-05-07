@@ -122,29 +122,25 @@ module mirror()
             translate([41,0,10]) cube( [10,40,20]);
         }
         
-    translate([0,0,-5]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[27,27],[27,0]]);    
+    translate([0,0,-3]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[25,25],[25,0]]);    
         
-    translate([0,0,40]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[27,27],[27,0]]);    
+    translate([0,0,38]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[25,25],[25,0]]);    
         
     }
-    translate([0,0,-5]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[5,5],[5,0]]);    
-    translate([0,0,40]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[5,5],[5,0]]);    
+    translate([0,0,-3]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[7,7],[7,0]]);    
+    translate([0,0,38]) linear_extrude(height = 5, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[7,7],[7,0]]);    
         
-        translate([35,37.5,-5]) cube( [20,20,50]);
+       translate([35,37.5,-5]) cube( [20,20,50]);
         
         translate([0,0,5]) linear_extrude(height = 31.2, center = false, convexity = 10, twist = 0) polygon(points=[[0,0],[30,30],[30,0]]);
     
-    
-        translate([21,21,0]) rotate([0,90,135]) screw("M3x5");
-        translate([8,8,0]) rotate([0,90,135]) screw("M3x5");
-        translate([21,21,40]) rotate([0,90,135]) screw("M3x5");
-        translate([8,8,40]) rotate([0,90,135]) screw("M3x5");
-    
+        translate([15,15,1]) rotate([0,90,135]) screw("M3x5");
+        translate([15,15,39]) rotate([0,90,135]) screw("M3x5");
     }
     
     
 }
-//mirror();
+mirror();
 
 
 module d22inner()
@@ -198,8 +194,10 @@ module d22()
         
         d22inner();
     }
+    
+    translate([28,14,20]) cube([2,2,20] , center=true);
+    translate([28,-15,20]) cube([2,2,20] , center=true);
 }
-
 //d22();
 
 
@@ -301,6 +299,7 @@ module plate() {
 }
 //plate();
 
+/*
 use <LEGO.scad>;
 
 
@@ -309,8 +308,6 @@ difference()
 plate();
 translate([35,-50,0]) cube([100,100,1000]);
 }
-
-
 
 spacecube = 50;
 difference()
@@ -326,11 +323,4 @@ block(
 translate([30,-spacecube/2,90]) cube([10,spacecube,110]);
     
 }
-
-/*
-block(
-        type="tile",
-        width=10,
-        length=16
-    );
 */
