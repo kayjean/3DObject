@@ -1,19 +1,11 @@
+include <cyl_head_bolt.scad>;
 
-/****************************
- * Generate Headset for 22D *
- ****************************/
-
-// TODO: Lens flange slots don't actually allow the lenses to rotate into them.
-
-/*******************************
- *   Adjustable Measurements   *
- *                             *
- * All measurements are in mm. *
- *******************************/
+$fn=120;
 
 // Overall case size
 // Width, Depth, Height
 //CaseSize = [140, 42, 75];
+//kayjean
 CaseSize = [160, 25, 80];
 
 // Interpupillary Distance
@@ -134,38 +126,6 @@ module masklens() {
     }
 }
 
-module masklens2() {
-    rotate ([-90, 0, 0]) {
-        cylinder(h=CaseSize.y+0.01, 
-                 d1=LensDiameter, 
-                 $fa=6);
-    }
-
-    for (i = [0:360/NumberOfLensFlanges:360]) {
-        rotate([0, i, 0]) {
-            // Flange opening
-            translate([-(LensFlangeOpeningDimensions.x / 2), 0, LensRadius - LensFlangeOpeningDimensions.z]) {
-                cube([
-                    LensFlangeOpeningDimensions.x,
-                    LensFlangeOpeningDimensions.y,
-                    LensFlangeOpeningDimensions.z * 2]);
-            }
-            // Flange slot
-            slotRotation = atan((LensFlangeDimensions.x / 2) / (LensRadius + LensFlangeDimensions.z)) * 2;
-            rotate([0, -slotRotation, 0]) {
-                translate([-(LensFlangeDimensions.x / 2), LensFlangeInset, (LensRadius) - LensFlangeOpeningDimensions.z]) {
-                
-                    cube([
-                        LensFlangeDimensions.x,
-                        LensFlangeDimensions.y,
-                        LensFlangeDimensions.z * 2]);
-                }
-            }
-        }
-    }
-}
-
-
 module noseHole() {
     scale([1, NoseOpeningRatio, 1]) {
          union() {
@@ -198,6 +158,14 @@ module faceGuard() {
     }
 }
 
+module d22()
+{
+            translate([CenterLeftLens.x, 40, CenterLeftLens.y]) {
+                rotate([90,0,0]) cylinder(h=50, d=70);
+            }
+}
+
+
 // Case
 module finalcase()
 {
@@ -207,13 +175,10 @@ intersection() {
         difference() {
             cube(CaseSize);
             
-            
-            // Left Lens
-            translate([CenterLeftLens.x, 40, CenterLeftLens.y]) {
-                rotate([90,0,0]) cylinder(h=50, d=70);
-                //masklens2();
-            }
-            
+
+            // Left d22
+            d22();
+
 /*
             // Left Lens
             translate([CenterLeftLens.x, 0, CenterLeftLens.y]) {
@@ -225,21 +190,7 @@ intersection() {
                 masklens();
             }
 */
-            
-/*            
-translate([37, 155, 38])
-rotate([0,90,-90])
-translate([0,0,-lens_total_w])
-    union()
-{
-            //22d
-            //translate([-d22offset,-d22box_y/2,maxw1]) 22dinter();
-
-            translate([0,0,lens_total_w]) d22out();
-}
-*/
-
-            
+                        
             // Nose hole
             translate([CaseSize.x / 2, 0, 0]) {
                 noseHole();
@@ -260,16 +211,97 @@ translate([0,0,-lens_total_w])
 }
 }
 
-finalcase();
+//finalcase();
 
 /*
 difference()
 {
-finalcase();
-translate([90,-150,-10]) cube([80,230,100]);    
+//finalcase();
+//translate([90,-150,-10]) cube([80,230,100]);    
     
 //translate([0,-150,-10]) cube([90,230,100]);    
 //translate([90,5,-10]) cube([80,100,100]);    
 
 }
 */
+
+d22boxwidth = 70;
+
+
+
+//eyeball
+module eyeball( showbasescrew = false )
+{
+    if( showbasescrew == true)
+    {
+        translate([35,35,3]) screw("M3x8");
+        translate([35,-5,3]) screw("M3x8");
+        translate([-5,-5,3]) screw("M3x8");
+        translate([-5,35,3]) screw("M3x8");
+    }
+        
+    difference()
+    {
+        union()
+        {
+        cube([30, 30, 30]);
+            translate([15,15,0]) cylinder(d=d22boxwidth,h=3,center=false);
+        }
+        
+translate([1.5,1.5,0]) scale([0.9,0.9,0.9])        cube([30, 30, 30]);
+        
+        
+        translate([15,15,36]) sphere(10);
+
+            if( showbasescrew == false )
+            {
+        translate([35,35,4]) screw("M3x5");
+        translate([35,-5,4]) screw("M3x5");
+        translate([-5,-5,4]) screw("M3x5");
+        translate([-5,35,4]) screw("M3x5");
+            }
+
+
+        translate([25,25,31]) screw("M3x5");
+        translate([25,5,31]) screw("M3x5");
+        translate([5,5,31]) screw("M3x5");
+        translate([5,25,31]) screw("M3x5");
+        
+    }
+    
+}
+//eyeball( showbasescrew = false);
+
+module eyeballcover()
+{
+    difference()
+    {
+        cube([30, 30, 3]);
+        translate([15,15,9]) sphere(10);
+        
+        translate([25,25,4]) screw("M3x5");
+        translate([25,5,4]) screw("M3x5");
+        translate([5,5,4]) screw("M3x5");
+        translate([5,25,4]) screw("M3x5");
+        
+    }
+}
+eyeballcover();
+
+module eyemount()
+{
+    difference()
+    {
+        heightdata = 80;
+        cube([80, heightdata, 80]);
+                    translate([40, heightdata-3, 40]) {
+                        rotate([90,0,0]) cylinder(h=heightdata, d=d22boxwidth);
+                    }
+                    
+        translate([25,heightdata-3,25]) rotate([90,0,0]) eyeball( showbasescrew = true );
+
+    }
+}
+
+//eyemount();
+
