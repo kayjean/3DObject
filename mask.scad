@@ -270,7 +270,7 @@ translate([1.5,1.5,0]) scale([0.9,0.9,0.9])        cube([30, 30, 30]);
     }
     
 }
-//eyeball( showbasescrew = false);
+eyeball( showbasescrew = false);
 
 module eyeballcover()
 {
@@ -286,7 +286,7 @@ module eyeballcover()
         
     }
 }
-eyeballcover();
+//eyeballcover();
 
 module eyemount()
 {
